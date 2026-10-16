@@ -12,3 +12,4 @@ import { PlantsModule } from './modules/plants/plants.module.js';
   providers: [],
 })
 export class AppModule {}
+
