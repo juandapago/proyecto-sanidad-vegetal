@@ -1,0 +1,1 @@
+export const PATHOGENS_SERVICE = Symbol('PATHOGENS_SERVICE');
