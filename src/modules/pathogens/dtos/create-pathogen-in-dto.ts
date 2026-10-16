@@ -1,19 +1,19 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { PathogenType } from '../enums/pathogen-type.enum.js';
 
-export class UpdatePathogenInDto {
-  @ApiPropertyOptional({ maxLength: 100 })
-  name?: string;
+export class CreatePathogenInDto {
+  @ApiProperty({ example: 'Roya del café', maxLength: 100 })
+  name: string;
 
-  @ApiPropertyOptional({ maxLength: 150 })
-  scientificName?: string;
+  @ApiProperty({ example: 'Hemileia vastatrix', maxLength: 150 })
+  scientificName: string;
 
-  @ApiPropertyOptional({ enum: PathogenType })
-  pathogenType?: PathogenType;
+  @ApiProperty({ enum: PathogenType, example: PathogenType.HONGO })
+  pathogenType: PathogenType;
 
-  @ApiPropertyOptional({ maxLength: 100 })
-  transmissionMode?: string;
+  @ApiProperty({ example: 'viento', maxLength: 100 })
+  transmissionMode: string;
 
-  @ApiPropertyOptional({ description: 'Solo A, C, G y T en mayúscula' })
-  geneticSequence?: string;
+  @ApiProperty({ example: 'ACGTTGCAACGT', description: 'Solo A, C, G y T en mayúscula' })
+  geneticSequence: string;
 }
