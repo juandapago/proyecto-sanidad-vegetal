@@ -1,14 +1,19 @@
 ﻿import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Like, Not, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Not, Repository } from 'typeorm';
 import { PlantsServiceInterface } from './plants-service-interface.js';
 import { Plant } from './entities/plant.entity.js';
 import { Susceptibility } from '../susceptibilities/entities/susceptibility.entity.js';
+import { SusceptibilityLevel } from '../susceptibilities/enums/susceptibility-level.enum.js';
 import { Crop } from '../crops/entities/crop.entity.js';
+import { Disease } from '../diseases/entities/disease.entity.js';
+import { Treatment } from '../treatments/entities/treatment.entity.js';
 import { CreatePlantInDto } from './dtos/create-plant-in-dto.js';
 import { UpdatePlantInDto } from './dtos/update-plant-in-dto.js';
 import { PlantFilterInDto } from './dtos/plant-filter-in-dto.js';
 import { PlantOutDto } from './dtos/plant-out-dto.js';
+import { PlantDiseaseOutDto } from './dtos/plant-disease-out-dto.js';
+import { PlantDiseasesOutDto } from './dtos/plant-diseases-out-dto.js';
 
 @Injectable()
 export class PlantsService implements PlantsServiceInterface {
@@ -19,6 +24,10 @@ export class PlantsService implements PlantsServiceInterface {
     private readonly susceptibilityRepository: Repository<Susceptibility>,
     @InjectRepository(Crop)
     private readonly cropRepository: Repository<Crop>,
+    @InjectRepository(Disease)
+    private readonly diseaseRepository: Repository<Disease>,
+    @InjectRepository(Treatment)
+    private readonly treatmentRepository: Repository<Treatment>,
   ) {}
 
   async findAll(filters: PlantFilterInDto): Promise<PlantOutDto[]> {
@@ -105,6 +114,52 @@ export class PlantsService implements PlantsServiceInterface {
     // que ningún brote tenga este plantId antes de borrar (409).
 
     await this.plantRepository.remove(plant);
+  }
+
+  async findDiseases(id: number, level?: SusceptibilityLevel): Promise<PlantDiseasesOutDto> {
+    const plant = await this.findPlantOrFail(id);
+
+    const where: FindOptionsWhere<Susceptibility> = { plantId: id };
+    if (level !== undefined) {
+      where.level = level;
+    }
+    const susceptibilities = await this.susceptibilityRepository.find({ where });
+
+    if (susceptibilities.length === 0) {
+      return { plant: this.toOutDto(plant), diseases: [] };
+    }
+
+    const diseaseIds = susceptibilities.map((susceptibility) => susceptibility.diseaseId);
+    const diseases = await this.diseaseRepository.findBy({ id: In(diseaseIds) });
+    const treatments = await this.treatmentRepository.findBy({ diseaseId: In(diseaseIds) });
+
+    const result: PlantDiseaseOutDto[] = [];
+    for (const susceptibility of susceptibilities) {
+      const disease = diseases.find((item) => item.id === susceptibility.diseaseId);
+      if (disease == null) {
+        continue;
+      }
+      const diseaseTreatments = treatments
+        .filter((treatment) => treatment.diseaseId === disease.id)
+        .map((treatment) => ({
+          id: treatment.id,
+          name: treatment.name,
+          applicationDescription: treatment.applicationDescription,
+          treatmentType: treatment.treatmentType,
+          diseaseId: treatment.diseaseId,
+        }));
+
+      result.push({
+        diseaseId: disease.id,
+        name: disease.name,
+        symptoms: disease.symptoms,
+        riskSeason: disease.riskSeason,
+        susceptibilityLevel: susceptibility.level,
+        treatments: diseaseTreatments,
+      });
+    }
+
+    return { plant: this.toOutDto(plant), diseases: result };
   }
 
   private async findPlantOrFail(id: number): Promise<Plant> {
