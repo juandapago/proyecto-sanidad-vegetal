@@ -9,6 +9,9 @@ import { CreateOutbreakInDto } from './dtos/create-outbreak-in-dto.js';
 import { UpdateOutbreakInDto } from './dtos/update-outbreak-in-dto.js';
 import { OutbreakFilterInDto } from './dtos/outbreak-filter-in-dto.js';
 import { OutbreakOutDto } from './dtos/outbreak-out-dto.js';
+import { Pathogen } from '../pathogens/entities/pathogen.entity.js';
+import { Treatment } from '../treatments/entities/treatment.entity.js';
+import { OutbreakDetailsOutDto } from './dtos/outbreak-details-out-dto.js';
 
 @Injectable()
 export class OutbreaksService implements OutbreaksServiceInterface {
@@ -19,6 +22,10 @@ export class OutbreaksService implements OutbreaksServiceInterface {
     private readonly plantRepository: Repository<Plant>,
     @InjectRepository(Disease)
     private readonly diseaseRepository: Repository<Disease>,
+    @InjectRepository(Pathogen)
+    private readonly pathogenRepository: Repository<Pathogen>,
+    @InjectRepository(Treatment)
+    private readonly treatmentRepository: Repository<Treatment>,
   ) {}
 
   async findAll(filters: OutbreakFilterInDto): Promise<OutbreakOutDto[]> {
@@ -94,6 +101,61 @@ export class OutbreaksService implements OutbreaksServiceInterface {
   async remove(id: number): Promise<void> {
     const outbreak = await this.findOutbreakOrFail(id);
     await this.outbreakRepository.remove(outbreak);
+  }
+
+    async findDetails(id: number): Promise<OutbreakDetailsOutDto> {
+    const outbreak = await this.findOutbreakOrFail(id);
+
+    const plant = await this.plantRepository.findOneBy({ id: outbreak.plantId });
+    if (plant == null) {
+      throw new NotFoundException(`No se encontró la planta con id ${outbreak.plantId}`);
+    }
+
+    const disease = await this.diseaseRepository.findOneBy({ id: outbreak.diseaseId });
+    if (disease == null) {
+      throw new NotFoundException(`No se encontró la enfermedad con id ${outbreak.diseaseId}`);
+    }
+
+    const pathogen = await this.pathogenRepository.findOneBy({ id: disease.pathogenId });
+    if (pathogen == null) {
+      throw new NotFoundException(`No se encontró el patógeno con id ${disease.pathogenId}`);
+    }
+
+    const treatments = await this.treatmentRepository.findBy({ diseaseId: disease.id });
+
+    return {
+      outbreak: this.toOutDto(outbreak),
+      plant: {
+        id: plant.id,
+        commonName: plant.commonName,
+        scientificName: plant.scientificName,
+        botanicalFamily: plant.botanicalFamily,
+        cropType: plant.cropType,
+        geneticSequence: plant.geneticSequence,
+      },
+      disease: {
+        id: disease.id,
+        name: disease.name,
+        symptoms: disease.symptoms,
+        riskSeason: disease.riskSeason,
+        pathogenId: disease.pathogenId,
+      },
+      pathogen: {
+        id: pathogen.id,
+        name: pathogen.name,
+        scientificName: pathogen.scientificName,
+        pathogenType: pathogen.pathogenType,
+        transmissionMode: pathogen.transmissionMode,
+        geneticSequence: pathogen.geneticSequence,
+      },
+      treatments: treatments.map((treatment) => ({
+        id: treatment.id,
+        name: treatment.name,
+        applicationDescription: treatment.applicationDescription,
+        treatmentType: treatment.treatmentType,
+        diseaseId: treatment.diseaseId,
+      })),
+    };
   }
 
   private async findOutbreakOrFail(id: number): Promise<Outbreak> {
