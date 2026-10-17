@@ -12,6 +12,7 @@ import {
   ApiTags,
   ApiUnprocessableEntityResponse,
 } from '@nestjs/swagger';
+import { CropRiskOutDto } from './dtos/crop-risk-out-dto.js';
 import type { CropsServiceInterface } from './crops-service-interface.js';
 import { CROPS_SERVICE } from './token.js';
 import { CreateCropInDto } from './dtos/create-crop-in-dto.js';
@@ -54,6 +55,16 @@ export class CropsController {
   @ApiUnprocessableEntityResponse({ description: 'La semilla y la secuencia de referencia tienen distinta longitud' })
   checkMutations(@Param('id') id: string) {
     return this.cropsService.checkMutations(parseId(id));
+  }
+
+    @Get(':id/risk')
+  @ApiOperation({ summary: 'Riesgo de un cultivo: enfermedades de susceptibilidad alta para su planta y brotes recientes en su región' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiOkResponse({ type: CropRiskOutDto })
+  @ApiBadRequestResponse({ description: 'El id no es un entero positivo' })
+  @ApiNotFoundResponse({ description: 'No existe el cultivo o su planta' })
+  findRisk(@Param('id') id: string) {
+    return this.cropsService.findRisk(parseId(id));
   }
 
   @Get(':id')

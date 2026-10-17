@@ -1,14 +1,24 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, MoreThanOrEqual, Repository } from 'typeorm';
 import { CropsServiceInterface } from './crops-service-interface.js';
 import { Crop } from './entities/crop.entity.js';
 import { Plant } from '../plants/entities/plant.entity.js';
+import { Susceptibility } from '../susceptibilities/entities/susceptibility.entity.js';
+import { SusceptibilityLevel } from '../susceptibilities/enums/susceptibility-level.enum.js';
+import { Disease } from '../diseases/entities/disease.entity.js';
+import { Outbreak } from '../outbreaks/entities/outbreak.entity.js';
+import { todayInColombia } from '../../common/validators.js';
 import { CreateCropInDto } from './dtos/create-crop-in-dto.js';
 import { UpdateCropInDto } from './dtos/update-crop-in-dto.js';
 import { CropFilterInDto } from './dtos/crop-filter-in-dto.js';
 import { CropOutDto } from './dtos/crop-out-dto.js';
 import { MutationCheckOutDto } from './dtos/mutation-check-out-dto.js';
+import { CropRiskOutDto } from './dtos/crop-risk-out-dto.js';
+import { CropRiskDiseaseOutDto } from './dtos/crop-risk-disease-out-dto.js';
+
+// Un brote se considera "reciente" si se reportó en los últimos 12 meses
+const RECENT_MONTHS = 12;
 
 @Injectable()
 export class CropsService implements CropsServiceInterface {
@@ -17,6 +27,12 @@ export class CropsService implements CropsServiceInterface {
     private readonly cropRepository: Repository<Crop>,
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
+    @InjectRepository(Susceptibility)
+    private readonly susceptibilityRepository: Repository<Susceptibility>,
+    @InjectRepository(Disease)
+    private readonly diseaseRepository: Repository<Disease>,
+    @InjectRepository(Outbreak)
+    private readonly outbreakRepository: Repository<Outbreak>,
   ) {}
 
   async findAll(filters: CropFilterInDto): Promise<CropOutDto[]> {
@@ -119,6 +135,76 @@ export class CropsService implements CropsServiceInterface {
       mutatedPositions,
       similarityPercentage,
     };
+  }
+
+  async findRisk(id: number): Promise<CropRiskOutDto> {
+    const crop = await this.findCropOrFail(id);
+
+    const plant = await this.plantRepository.findOneBy({ id: crop.plantId });
+    if (plant == null) {
+      throw new NotFoundException(`No se encontró la planta con id ${crop.plantId}`);
+    }
+
+    const recentSince = this.recentSinceDate();
+    const cropOutDto = this.toOutDto(crop);
+    const plantOutDto = {
+      id: plant.id,
+      commonName: plant.commonName,
+      scientificName: plant.scientificName,
+      botanicalFamily: plant.botanicalFamily,
+      cropType: plant.cropType,
+      geneticSequence: plant.geneticSequence,
+    };
+
+    const susceptibilities = await this.susceptibilityRepository.findBy({
+      plantId: plant.id,
+      level: SusceptibilityLevel.ALTA,
+    });
+    if (susceptibilities.length === 0) {
+      return { crop: cropOutDto, plant: plantOutDto, recentSince, riskDiseases: [], totalRecentOutbreaks: 0 };
+    }
+
+    const diseaseIds = susceptibilities.map((susceptibility) => susceptibility.diseaseId);
+    const diseases = await this.diseaseRepository.findBy({ id: In(diseaseIds) });
+    const outbreaks = await this.outbreakRepository.findBy({
+      diseaseId: In(diseaseIds),
+      region: crop.region,
+      reportDate: MoreThanOrEqual(recentSince),
+    });
+
+    const riskDiseases: CropRiskDiseaseOutDto[] = diseases.map((disease) => ({
+      disease: {
+        id: disease.id,
+        name: disease.name,
+        symptoms: disease.symptoms,
+        riskSeason: disease.riskSeason,
+        pathogenId: disease.pathogenId,
+      },
+      recentOutbreaks: outbreaks
+        .filter((outbreak) => outbreak.diseaseId === disease.id)
+        .map((outbreak) => ({
+          id: outbreak.id,
+          plantId: outbreak.plantId,
+          diseaseId: outbreak.diseaseId,
+          reportDate: outbreak.reportDate,
+          region: outbreak.region,
+          affectedHectares: Number(outbreak.affectedHectares),
+        })),
+    }));
+
+    return {
+      crop: cropOutDto,
+      plant: plantOutDto,
+      recentSince,
+      riskDiseases,
+      totalRecentOutbreaks: outbreaks.length,
+    };
+  }
+
+  private recentSinceDate(): string {
+    const [year, month, day] = todayInColombia().split('-').map(Number);
+    const since = new Date(Date.UTC(year, month - 1 - RECENT_MONTHS, day));
+    return since.toISOString().slice(0, 10);
   }
 
   private async findCropOrFail(id: number): Promise<Crop> {
