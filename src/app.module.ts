@@ -7,7 +7,7 @@ import { TreatmentsModule } from './modules/treatments/treatments.module.js';
 import { PlantsModule } from './modules/plants/plants.module.js';
 import { SusceptibilitiesModule } from './modules/susceptibilities/susceptibilities.module.js';
 import { CropsModule } from './modules/crops/crops.module.js';
-
+import { OutbreaksModule } from './modules/outbreaks/outbreaks.module.js';
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true }), MysqlModule, PathogensModule, DiseasesModule, TreatmentsModule, PlantsModule, SusceptibilitiesModule, CropsModule],
   controllers: [],
