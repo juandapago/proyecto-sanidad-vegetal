@@ -11,6 +11,9 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { OutbreakDetailsOutDto } from './dtos/outbreak-details-out-dto.js';
+
+
 import type { OutbreaksServiceInterface } from './outbreaks-service-interface.js';
 import { OUTBREAKS_SERVICE } from './token.js';
 import { CreateOutbreakInDto } from './dtos/create-outbreak-in-dto.js';
@@ -47,6 +50,16 @@ export class OutbreaksController {
   ) {
     const filters = validateOutbreakFilters(plantId, diseaseId, region, from, to, minHectares);
     return this.outbreaksService.findAll(filters);
+  }
+
+    @Get(':id/details')
+  @ApiOperation({ summary: 'Detalles de un brote: su planta, su enfermedad, el patógeno que la causa y los tratamientos recomendados' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiOkResponse({ type: OutbreakDetailsOutDto })
+  @ApiBadRequestResponse({ description: 'El id no es un entero positivo' })
+  @ApiNotFoundResponse({ description: 'No existe el brote, o falta su planta, su enfermedad o su patógeno' })
+  findDetails(@Param('id') id: string) {
+    return this.outbreaksService.findDetails(parseId(id));
   }
 
   @Get(':id')
