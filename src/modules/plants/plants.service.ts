@@ -8,6 +8,7 @@ import { SusceptibilityLevel } from '../susceptibilities/enums/susceptibility-le
 import { Crop } from '../crops/entities/crop.entity.js';
 import { Disease } from '../diseases/entities/disease.entity.js';
 import { Treatment } from '../treatments/entities/treatment.entity.js';
+import { Outbreak } from '../outbreaks/entities/outbreak.entity.js';
 import { CreatePlantInDto } from './dtos/create-plant-in-dto.js';
 import { UpdatePlantInDto } from './dtos/update-plant-in-dto.js';
 import { PlantFilterInDto } from './dtos/plant-filter-in-dto.js';
@@ -28,6 +29,8 @@ export class PlantsService implements PlantsServiceInterface {
     private readonly diseaseRepository: Repository<Disease>,
     @InjectRepository(Treatment)
     private readonly treatmentRepository: Repository<Treatment>,
+    @InjectRepository(Outbreak)
+    private readonly outbreakRepository: Repository<Outbreak>,
   ) {}
 
   async findAll(filters: PlantFilterInDto): Promise<PlantOutDto[]> {
@@ -110,8 +113,11 @@ export class PlantsService implements PlantsServiceInterface {
     if (crops > 0) {
       throw new ConflictException(`No se puede eliminar la planta ${id} porque tiene ${crops} cultivo(s) registrado(s)`);
     }
-    // Cuando exista el módulo de brotes, aquí también se debe verificar
-    // que ningún brote tenga este plantId antes de borrar (409).
+
+    const outbreaks = await this.outbreakRepository.count({ where: { plantId: id } });
+    if (outbreaks > 0) {
+      throw new ConflictException(`No se puede eliminar la planta ${id} porque tiene ${outbreaks} brote(s) registrado(s)`);
+    }
 
     await this.plantRepository.remove(plant);
   }
