@@ -1,9 +1,10 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+﻿import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Like, Not, Repository } from 'typeorm';
 import { PlantsServiceInterface } from './plants-service-interface.js';
 import { Plant } from './entities/plant.entity.js';
 import { Susceptibility } from '../susceptibilities/entities/susceptibility.entity.js';
+import { Crop } from '../crops/entities/crop.entity.js';
 import { CreatePlantInDto } from './dtos/create-plant-in-dto.js';
 import { UpdatePlantInDto } from './dtos/update-plant-in-dto.js';
 import { PlantFilterInDto } from './dtos/plant-filter-in-dto.js';
@@ -11,11 +12,13 @@ import { PlantOutDto } from './dtos/plant-out-dto.js';
 
 @Injectable()
 export class PlantsService implements PlantsServiceInterface {
-    constructor(
+  constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
     @InjectRepository(Susceptibility)
     private readonly susceptibilityRepository: Repository<Susceptibility>,
+    @InjectRepository(Crop)
+    private readonly cropRepository: Repository<Crop>,
   ) {}
 
   async findAll(filters: PlantFilterInDto): Promise<PlantOutDto[]> {
@@ -84,7 +87,7 @@ export class PlantsService implements PlantsServiceInterface {
     return this.toOutDto(saved);
   }
 
-    async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<void> {
     const plant = await this.findPlantOrFail(id);
 
     const susceptibilities = await this.susceptibilityRepository.count({ where: { plantId: id } });
@@ -93,8 +96,13 @@ export class PlantsService implements PlantsServiceInterface {
         `No se puede eliminar la planta ${id} porque tiene ${susceptibilities} susceptibilidad(es) registrada(s)`,
       );
     }
-    // Cuando existan cultivos y brotes, aquí también se debe verificar
-    // que ninguno tenga este plantId antes de borrar (409).
+
+    const crops = await this.cropRepository.count({ where: { plantId: id } });
+    if (crops > 0) {
+      throw new ConflictException(`No se puede eliminar la planta ${id} porque tiene ${crops} cultivo(s) registrado(s)`);
+    }
+    // Cuando exista el módulo de brotes, aquí también se debe verificar
+    // que ningún brote tenga este plantId antes de borrar (409).
 
     await this.plantRepository.remove(plant);
   }
