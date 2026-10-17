@@ -11,7 +11,7 @@ export class OutbreakOutDto {
     diseaseId: number;
 
     @ApiProperty({ example: '2023-06-15', description: 'Fecha del brote' })
-    reportDate: Date;
+    reportDate: String;
 
     @ApiProperty({ example: 'Andalucía', description: 'Región del brote' })
     region: string;
