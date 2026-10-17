@@ -1,0 +1,1 @@
+export const OUTBREAKS_SERVICE = Symbol('OUTBREAKS_SERVICE');
