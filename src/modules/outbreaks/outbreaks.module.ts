@@ -6,10 +6,12 @@ import { Disease } from '../diseases/entities/disease.entity.js';
 import { OutbreaksController } from './outbreaks.controller.js';
 import { OutbreaksService } from './outbreaks.service.js';
 import { OUTBREAKS_SERVICE } from './token.js';
+import { Pathogen } from '../pathogens/entities/pathogen.entity.js';
+import { Treatment } from '../treatments/entities/treatment.entity.js';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Outbreak, Plant, Disease])],
-  controllers: [OutbreaksController],
+  imports: [TypeOrmModule.forFeature([Outbreak, Plant, Disease, Pathogen, Treatment])],  controllers: [OutbreaksController],
   providers: [
     {
       provide: OUTBREAKS_SERVICE,
