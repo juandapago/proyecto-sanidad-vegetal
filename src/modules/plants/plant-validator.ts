@@ -1,11 +1,13 @@
-import { BadRequestException } from '@nestjs/common';
+﻿import { BadRequestException } from '@nestjs/common';
 import { CreatePlantInDto } from './dtos/create-plant-in-dto.js';
 import { UpdatePlantInDto } from './dtos/update-plant-in-dto.js';
 import { PlantFilterInDto } from './dtos/plant-filter-in-dto.js';
 import { CropType } from './enums/crop-type.enum.js';
+import { SusceptibilityLevel } from '../susceptibilities/enums/susceptibility-level.enum.js';
 import { requireBody, requireEnum, requireSequence, requireString } from '../../common/validators.js';
 
 const CROP_TYPES: string[] = Object.values(CropType);
+const LEVELS: string[] = Object.values(SusceptibilityLevel);
 
 export function validateCreatePlant(body: any): CreatePlantInDto {
   requireBody(body);
@@ -54,4 +56,11 @@ export function validatePlantFilters(name?: string, cropType?: string, botanical
     filters.botanicalFamily = requireString(botanicalFamily, 'botanicalFamily', 100);
   }
   return filters;
+}
+
+export function validatePlantDiseasesLevel(level?: string): SusceptibilityLevel | undefined {
+  if (level === undefined) {
+    return undefined;
+  }
+  return requireEnum(level, 'level', LEVELS) as SusceptibilityLevel;
 }
