@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Inject, Param, Patch, Post, Query } from '@nestjs/common';
+﻿import { Body, Controller, Delete, Get, HttpCode, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -17,9 +17,16 @@ import { PLANTS_SERVICE } from './token.js';
 import { CreatePlantInDto } from './dtos/create-plant-in-dto.js';
 import { UpdatePlantInDto } from './dtos/update-plant-in-dto.js';
 import { PlantOutDto } from './dtos/plant-out-dto.js';
+import { PlantDiseasesOutDto } from './dtos/plant-diseases-out-dto.js';
 import { CropType } from './enums/crop-type.enum.js';
+import { SusceptibilityLevel } from '../susceptibilities/enums/susceptibility-level.enum.js';
 import { parseId } from '../../common/validators.js';
-import { validateCreatePlant, validatePlantFilters, validateUpdatePlant } from './plant-validator.js';
+import {
+  validateCreatePlant,
+  validatePlantDiseasesLevel,
+  validatePlantFilters,
+  validateUpdatePlant,
+} from './plant-validator.js';
 
 @ApiTags('plants')
 @Controller('plants')
@@ -43,6 +50,19 @@ export class PlantsController {
   ) {
     const filters = validatePlantFilters(name, cropType, botanicalFamily);
     return this.plantsService.findAll(filters);
+  }
+
+  @Get(':id/diseases')
+  @ApiOperation({ summary: 'Enfermedades que afectan a una planta, con su nivel de susceptibilidad y sus tratamientos' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiQuery({ name: 'level', required: false, enum: SusceptibilityLevel, description: 'Filtra por nivel de susceptibilidad' })
+  @ApiOkResponse({ type: PlantDiseasesOutDto })
+  @ApiBadRequestResponse({ description: 'El id no es un entero positivo o el nivel no es válido' })
+  @ApiNotFoundResponse({ description: 'No existe una planta con ese id' })
+  findDiseases(@Param('id') id: string, @Query('level') level?: string) {
+    const plantId = parseId(id);
+    const susceptibilityLevel = validatePlantDiseasesLevel(level);
+    return this.plantsService.findDiseases(plantId, susceptibilityLevel);
   }
 
   @Get(':id')
