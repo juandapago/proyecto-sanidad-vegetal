@@ -1,0 +1,24 @@
+meta {
+  name: Error 404 - enfermedad que no existe
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/treatments
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Fungicida a base de cobre",
+    "applicationDescription": "Aplicar oxicloruro de cobre al cogollo cada 30 días en época de lluvias",
+    "treatmentType": "quimico",
+    "diseaseId": 999999
+  }
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Error 409 - eliminar planta con susceptibilidades
+  type: http
+  seq: 32
+}
+
+delete {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 409
+}

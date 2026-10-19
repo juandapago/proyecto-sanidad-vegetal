@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar plantas por tipo de cultivo
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/plants?cropType=hortaliza
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

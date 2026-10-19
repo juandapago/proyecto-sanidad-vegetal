@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - nombre vacío
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/pathogens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "   ",
+    "scientificName": "Prueba vacia",
+    "pathogenType": "hongo",
+    "transmissionMode": "agua de lluvia",
+    "geneticSequence": "ACGTTGCAACGTAGCT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

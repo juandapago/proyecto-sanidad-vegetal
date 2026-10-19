@@ -1,0 +1,21 @@
+meta {
+  name: Modificar nivel a alta
+  type: http
+  seq: 16
+}
+
+patch {
+  url: {{baseUrl}}/susceptibilities/{{susceptibilityId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "level": "alta"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

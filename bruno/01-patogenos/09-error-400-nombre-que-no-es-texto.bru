@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - nombre que no es texto
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/pathogens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": 123,
+    "scientificName": "Prueba numero",
+    "pathogenType": "hongo",
+    "transmissionMode": "agua de lluvia",
+    "geneticSequence": "ACGTTGCAACGTAGCT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

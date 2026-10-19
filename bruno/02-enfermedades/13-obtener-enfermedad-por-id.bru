@@ -1,0 +1,15 @@
+meta {
+  name: Obtener enfermedad por id
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/diseases/{{diseaseId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}
