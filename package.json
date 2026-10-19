@@ -1,6 +1,6 @@
 {
   "name": "proyecto-sanidad-vegetal",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "author": "",
   "private": true,
@@ -14,7 +14,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-        "seed": "node scripts/seed.mjs",  
+    "seed": "node scripts/seed.mjs",
     "lint": "oxlint src/ test/",
     "test": "vitest run",
     "test:watch": "vitest",
