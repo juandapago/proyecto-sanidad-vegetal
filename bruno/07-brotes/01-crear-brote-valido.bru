@@ -1,0 +1,32 @@
+meta {
+  name: Crear brote válido
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 1,
+    "reportDate": "2026-01-15",
+    "region": "Huila",
+    "affectedHectares": 5.5
+  }
+}
+
+vars:post-response {
+  outbreakId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.plantId: eq 1
+  res.body.diseaseId: eq 1
+  res.body.region: eq Huila
+}

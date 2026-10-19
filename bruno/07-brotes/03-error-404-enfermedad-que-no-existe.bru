@@ -1,0 +1,25 @@
+meta {
+  name: Error 404 - enfermedad que no existe
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 9999,
+    "reportDate": "2026-01-15",
+    "region": "Huila",
+    "affectedHectares": 5.5
+  }
+}
+
+assert {
+  res.status: eq 404
+}

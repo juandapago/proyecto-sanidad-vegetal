@@ -1,0 +1,15 @@
+meta {
+  name: Error 404 - eliminar brote ya eliminado
+  type: http
+  seq: 24
+}
+
+delete {
+  url: {{baseUrl}}/outbreaks/{{outbreakId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar brotes por región
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/outbreaks?region=Huila
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

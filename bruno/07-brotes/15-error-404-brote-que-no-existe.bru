@@ -1,0 +1,15 @@
+meta {
+  name: Error 404 - brote que no existe
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}/outbreaks/9999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

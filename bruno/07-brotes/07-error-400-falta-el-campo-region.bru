@@ -1,0 +1,24 @@
+meta {
+  name: Error 400 - falta el campo region
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 1,
+    "reportDate": "2026-01-15",
+    "affectedHectares": 5.5
+  }
+}
+
+assert {
+  res.status: eq 400
+}

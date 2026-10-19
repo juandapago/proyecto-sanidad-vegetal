@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - hectáreas afectadas negativas
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 1,
+    "reportDate": "2026-01-15",
+    "region": "Huila",
+    "affectedHectares": -1
+  }
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Modificar región del brote
+  type: http
+  seq: 20
+}
+
+patch {
+  url: {{baseUrl}}/outbreaks/{{outbreakId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "region": "Antioquia"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.region: eq Antioquia
+}
