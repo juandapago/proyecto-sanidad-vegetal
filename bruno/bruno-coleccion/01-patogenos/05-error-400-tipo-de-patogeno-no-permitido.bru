@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - tipo de patógeno no permitido
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pathogens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Antracnosis",
+    "scientificName": "Prueba tipo",
+    "pathogenType": "alienigena",
+    "transmissionMode": "agua de lluvia",
+    "geneticSequence": "ACGTTGCAACGTAGCT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Limpiar - eliminar tratamiento
+  type: http
+  seq: 24
+}
+
+delete {
+  url: {{baseUrl}}/treatments/{{treatmentId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}
