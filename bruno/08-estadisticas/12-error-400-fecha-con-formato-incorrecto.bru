@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - fecha con formato incorrecto
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/by-month?from=01/01/2026
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

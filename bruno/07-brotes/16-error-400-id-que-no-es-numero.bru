@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - id que no es número
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{baseUrl}}/outbreaks/abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

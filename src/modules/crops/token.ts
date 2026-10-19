@@ -1,0 +1,1 @@
+export const CROPS_SERVICE = Symbol('CROPS_SERVICE');

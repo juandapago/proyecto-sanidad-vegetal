@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - fecha con formato incorrecto
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/crops
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "lot": "Lote 7",
+    "region": "Tolima",
+    "sowingDate": "15/03/2026",
+    "seedGeneticCode": "ACGAACGTACGA"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

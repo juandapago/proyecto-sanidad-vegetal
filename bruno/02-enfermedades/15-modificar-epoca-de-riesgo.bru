@@ -1,0 +1,21 @@
+meta {
+  name: Modificar época de riesgo
+  type: http
+  seq: 15
+}
+
+patch {
+  url: {{baseUrl}}/diseases/{{diseaseId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "riskSeason": "invierno"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

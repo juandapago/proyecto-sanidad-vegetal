@@ -1,0 +1,19 @@
+meta {
+  name: Error 400 - modificar sin enviar campos
+  type: http
+  seq: 18
+}
+
+patch {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
+
+assert {
+  res.status: eq 400
+}

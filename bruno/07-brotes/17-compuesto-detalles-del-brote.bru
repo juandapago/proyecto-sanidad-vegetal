@@ -1,0 +1,20 @@
+meta {
+  name: Compuesto - detalles del brote
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{baseUrl}}/outbreaks/1/details
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.outbreak.id: eq 1
+  res.body.plant: isDefined
+  res.body.disease: isDefined
+  res.body.pathogen: isDefined
+  res.body.treatments: isDefined
+}

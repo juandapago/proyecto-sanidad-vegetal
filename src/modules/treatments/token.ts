@@ -1,0 +1,1 @@
+export const TREATMENTS_SERVICE = Symbol('TREATMENTS_SERVICE');

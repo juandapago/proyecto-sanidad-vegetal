@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - limit inválido
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/by-disease?limit=abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

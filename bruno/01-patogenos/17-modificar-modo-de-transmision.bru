@@ -1,0 +1,21 @@
+meta {
+  name: Modificar modo de transmisión
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/pathogens/{{pathogenId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "transmissionMode": "agua de lluvia y herramientas"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

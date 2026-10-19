@@ -1,0 +1,16 @@
+meta {
+  name: Obtener brote por id
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/outbreaks/{{outbreakId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq {{outbreakId}}
+}

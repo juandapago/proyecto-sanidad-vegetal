@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - detalles con id inválido
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{baseUrl}}/outbreaks/abc/details
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

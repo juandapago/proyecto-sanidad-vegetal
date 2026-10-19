@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - fecha con formato incorrecto
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 1,
+    "reportDate": "15-01-2026",
+    "region": "Huila",
+    "affectedHectares": 5.5
+  }
+}
+
+assert {
+  res.status: eq 400
+}

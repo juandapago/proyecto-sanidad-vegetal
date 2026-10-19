@@ -1,0 +1,1 @@
+export const STATISTICS_SERVICE = Symbol('STATISTICS_SERVICE');

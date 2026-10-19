@@ -1,0 +1,23 @@
+meta {
+  name: Error 400 - falta el pathogenId
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/diseases
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Prueba sin patogeno",
+    "symptoms": "x",
+    "riskSeason": "verano"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

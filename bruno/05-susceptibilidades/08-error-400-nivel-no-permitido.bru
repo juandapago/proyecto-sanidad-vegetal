@@ -1,0 +1,23 @@
+meta {
+  name: Error 400 - nivel no permitido
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "diseaseId": {{diseaseId}},
+    "level": "altisima"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

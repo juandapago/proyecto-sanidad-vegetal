@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - nombre común que no es texto
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": 123,
+    "scientificName": "Solanum prueba6",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
