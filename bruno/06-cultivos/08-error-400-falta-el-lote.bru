@@ -1,0 +1,24 @@
+meta {
+  name: Error 400 - falta el lote
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/crops
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "region": "Tolima",
+    "sowingDate": "2026-03-15",
+    "seedGeneticCode": "ACGAACGTACGA"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Limpiar - eliminar planta
+  type: http
+  seq: 22
+}
+
+delete {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

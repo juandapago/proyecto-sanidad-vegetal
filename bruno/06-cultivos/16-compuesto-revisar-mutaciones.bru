@@ -1,0 +1,16 @@
+meta {
+  name: Compuesto - revisar mutaciones
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{baseUrl}}/crops/{{cropId}}/mutations
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.mutations: eq 2
+}
