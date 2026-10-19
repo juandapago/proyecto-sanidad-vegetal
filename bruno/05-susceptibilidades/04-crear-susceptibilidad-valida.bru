@@ -1,0 +1,27 @@
+meta {
+  name: Crear susceptibilidad válida
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "diseaseId": {{diseaseId}},
+    "level": "media"
+  }
+}
+
+vars:post-response {
+  susceptibilityId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
