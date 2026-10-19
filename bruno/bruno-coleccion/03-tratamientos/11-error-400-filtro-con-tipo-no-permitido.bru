@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - filtro con tipo no permitido
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/treatments?treatmentType=magia
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

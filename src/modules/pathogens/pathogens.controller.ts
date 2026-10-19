@@ -17,6 +17,7 @@ import { PATHOGENS_SERVICE } from './token.js';
 import { CreatePathogenInDto } from './dtos/create-pathogen-in-dto.js';
 import { UpdatePathogenInDto } from './dtos/update-pathogen-in-dto.js';
 import { PathogenOutDto } from './dtos/pathogen-out-dto.js';
+import { PathogenDiseasesOutDto } from './dtos/pathogen-diseases-out-dto.js';
 import { PathogenType } from './enums/pathogen-type.enum.js';
 import { parseId } from '../../common/validators.js';
 import { validateCreatePathogen, validatePathogenFilters, validateUpdatePathogen } from './pathogen-validator.js';
@@ -53,6 +54,16 @@ export class PathogensController {
   @ApiNotFoundResponse({ description: 'No existe un patógeno con ese id' })
   findOne(@Param('id') id: string) {
     return this.pathogensService.findOne(parseId(id));
+  }
+
+  @Get(':id/diseases')
+  @ApiOperation({ summary: 'Consultar un patógeno junto con todas las enfermedades que causa' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiOkResponse({ type: PathogenDiseasesOutDto })
+  @ApiBadRequestResponse({ description: 'El id no es un entero positivo' })
+  @ApiNotFoundResponse({ description: 'No existe un patógeno con ese id' })
+  findDiseases(@Param('id') id: string) {
+    return this.pathogensService.findDiseases(parseId(id));
   }
 
   @Post()

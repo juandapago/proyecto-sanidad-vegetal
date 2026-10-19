@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar enfermedades por época
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/diseases?riskSeason=todo_el_ano
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

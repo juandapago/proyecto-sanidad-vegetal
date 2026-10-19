@@ -7,12 +7,16 @@ import { CreatePathogenInDto } from './dtos/create-pathogen-in-dto.js';
 import { UpdatePathogenInDto } from './dtos/update-pathogen-in-dto.js';
 import { PathogenFilterInDto } from './dtos/pathogen-filter-in-dto.js';
 import { PathogenOutDto } from './dtos/pathogen-out-dto.js';
+import { PathogenDiseasesOutDto } from './dtos/pathogen-diseases-out-dto.js';
+import { Disease } from '../diseases/entities/disease.entity.js';
 
 @Injectable()
 export class PathogensService implements PathogensServiceInterface {
   constructor(
     @InjectRepository(Pathogen)
     private readonly pathogenRepository: Repository<Pathogen>,
+    @InjectRepository(Disease)
+    private readonly diseaseRepository: Repository<Disease>,
   ) {}
 
   async findAll(filters: PathogenFilterInDto): Promise<PathogenOutDto[]> {
@@ -83,9 +87,29 @@ export class PathogensService implements PathogensServiceInterface {
 
   async remove(id: number): Promise<void> {
     const pathogen = await this.findPathogenOrFail(id);
-    // Cuando exista el módulo de enfermedades, aquí se debe verificar
-    // que ninguna enfermedad tenga este pathogenId antes de borrar (409).
+    const diseaseCount = await this.diseaseRepository.countBy({ pathogenId: id });
+    if (diseaseCount > 0) {
+      throw new ConflictException(
+        `No se puede eliminar el patógeno con id ${id} porque tiene ${diseaseCount} enfermedad(es) asociada(s)`,
+      );
+    }
     await this.pathogenRepository.remove(pathogen);
+  }
+
+  async findDiseases(id: number): Promise<PathogenDiseasesOutDto> {
+    const pathogen = await this.findPathogenOrFail(id);
+    const diseases = await this.diseaseRepository.findBy({ pathogenId: id });
+    return {
+      pathogen: this.toOutDto(pathogen),
+      totalDiseases: diseases.length,
+      diseases: diseases.map((disease) => ({
+        id: disease.id,
+        name: disease.name,
+        symptoms: disease.symptoms,
+        riskSeason: disease.riskSeason,
+        pathogenId: disease.pathogenId,
+      })),
+    };
   }
 
   private async findPathogenOrFail(id: number): Promise<Pathogen> {
