@@ -1,0 +1,15 @@
+meta {
+  name: Obtener patógeno por id
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/pathogens/{{pathogenId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

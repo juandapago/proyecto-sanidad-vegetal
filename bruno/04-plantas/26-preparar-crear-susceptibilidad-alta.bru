@@ -1,0 +1,27 @@
+meta {
+  name: Preparar - crear susceptibilidad alta
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "diseaseId": {{diseaseId}},
+    "level": "alta"
+  }
+}
+
+vars:post-response {
+  susceptibilityId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

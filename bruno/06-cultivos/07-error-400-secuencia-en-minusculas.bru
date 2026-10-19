@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - secuencia en minúsculas
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/crops
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "lot": "Lote 7",
+    "region": "Tolima",
+    "sowingDate": "2026-03-15",
+    "seedGeneticCode": "acgt"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

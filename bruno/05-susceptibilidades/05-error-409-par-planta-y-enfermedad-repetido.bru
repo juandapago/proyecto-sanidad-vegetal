@@ -1,0 +1,23 @@
+meta {
+  name: Error 409 - par planta y enfermedad repetido
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "diseaseId": {{diseaseId}},
+    "level": "alta"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

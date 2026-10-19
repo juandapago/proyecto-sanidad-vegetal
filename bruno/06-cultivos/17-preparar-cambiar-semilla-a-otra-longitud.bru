@@ -1,0 +1,21 @@
+meta {
+  name: Preparar - cambiar semilla a otra longitud
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/crops/{{cropId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "seedGeneticCode": "ACGT"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

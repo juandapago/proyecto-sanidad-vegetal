@@ -1,0 +1,15 @@
+meta {
+  name: Compuesto - enfermedades de la planta con nivel alta
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{baseUrl}}/plants/{{plantId}}/diseases?level=alta
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

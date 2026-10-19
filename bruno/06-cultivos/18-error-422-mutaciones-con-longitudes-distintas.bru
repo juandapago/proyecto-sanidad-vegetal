@@ -1,0 +1,15 @@
+meta {
+  name: Error 422 - mutaciones con longitudes distintas
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{baseUrl}}/crops/{{cropId}}/mutations
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 422
+}

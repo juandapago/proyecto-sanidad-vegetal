@@ -1,0 +1,15 @@
+meta {
+  name: Error 404 - eliminar planta ya eliminada
+  type: http
+  seq: 41
+}
+
+delete {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+}

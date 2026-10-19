@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "API Sanidad Vegetal",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

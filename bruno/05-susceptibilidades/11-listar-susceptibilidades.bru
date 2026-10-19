@@ -1,0 +1,15 @@
+meta {
+  name: Listar susceptibilidades
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/susceptibilities
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

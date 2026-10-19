@@ -1,0 +1,15 @@
+meta {
+  name: Compuesto - nivel media devuelve lista vacía
+  type: http
+  seq: 29
+}
+
+get {
+  url: {{baseUrl}}/plants/{{plantId}}/diseases?level=media
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

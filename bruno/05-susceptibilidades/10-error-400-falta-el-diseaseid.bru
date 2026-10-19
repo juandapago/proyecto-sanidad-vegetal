@@ -1,0 +1,22 @@
+meta {
+  name: Error 400 - falta el diseaseId
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "level": "alta"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
