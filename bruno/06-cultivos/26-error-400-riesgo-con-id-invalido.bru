@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - riesgo con id inválido
+  type: http
+  seq: 26
+}
+
+get {
+  url: {{baseUrl}}/crops/abc/risk
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Compuesto - riesgo de cultivo sin enfermedades de riesgo
+  type: http
+  seq: 24
+}
+
+get {
+  url: {{baseUrl}}/crops/6/risk
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.riskDiseases: isEmpty
+  res.body.totalRecentOutbreaks: eq 0
+}
