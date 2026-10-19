@@ -4,6 +4,8 @@ import type { StatisticsServiceInterface } from './statistics-service-interface.
 import { STATISTICS_SERVICE } from './token.js';
 import { OutbreakGroupOutDto } from './dtos/outbreak-group-out-dto.js';
 import { RegionOutbreakOutDto } from './dtos/region-outbreak-out-dto.js';
+import { MonthOutbreakOutDto } from './dtos/month-outbreak-out-dto.js';
+import { OutbreakSummaryOutDto } from './dtos/outbreak-summary-out-dto.js';
 import { validateStatisticsFilters } from './statistics-validator.js';
 
 @ApiTags('statistics')
@@ -56,5 +58,26 @@ export class StatisticsController {
   @ApiBadRequestResponse({ description: 'Alguna fecha o el límite son inválidos' })
   byRegion(@Query('from') from?: string, @Query('to') to?: string, @Query('limit') limit?: string) {
     return this.statisticsService.byRegion(validateStatisticsFilters(from, to, limit));
+  }
+
+  @Get('by-month')
+  @ApiOperation({ summary: 'Brotes, hectáreas y brotes en época de riesgo por mes, en orden cronológico' })
+  @ApiQuery({ name: 'from', required: false, description: 'Fecha de reporte desde (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'to', required: false, description: 'Fecha de reporte hasta (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Solo los primeros N meses' })
+  @ApiOkResponse({ type: MonthOutbreakOutDto, isArray: true })
+  @ApiBadRequestResponse({ description: 'Alguna fecha o el límite son inválidos' })
+  byMonth(@Query('from') from?: string, @Query('to') to?: string, @Query('limit') limit?: string) {
+    return this.statisticsService.byMonth(validateStatisticsFilters(from, to, limit));
+  }
+
+  @Get('summary')
+  @ApiOperation({ summary: 'Resumen total: número de brotes y hectáreas afectadas en el período' })
+  @ApiQuery({ name: 'from', required: false, description: 'Fecha de reporte desde (YYYY-MM-DD)' })
+  @ApiQuery({ name: 'to', required: false, description: 'Fecha de reporte hasta (YYYY-MM-DD)' })
+  @ApiOkResponse({ type: OutbreakSummaryOutDto })
+  @ApiBadRequestResponse({ description: 'Alguna fecha es inválida o from > to' })
+  summary(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.statisticsService.summary(validateStatisticsFilters(from, to, undefined));
   }
 }
