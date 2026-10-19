@@ -17,6 +17,7 @@ import { DISEASES_SERVICE } from './token.js';
 import { CreateDiseaseInDto } from './dtos/create-disease-in-dto.js';
 import { UpdateDiseaseInDto } from './dtos/update-disease-in-dto.js';
 import { DiseaseOutDto } from './dtos/disease-out-dto.js';
+import { DiseaseDetailsOutDto } from './dtos/disease-details-out-dto.js';
 import { RiskSeason } from './enums/risk-season.enum.js';
 import { parseId } from '../../common/validators.js';
 import { validateCreateDisease, validateDiseaseFilters, validateUpdateDisease } from './disease-validator.js';
@@ -53,6 +54,16 @@ export class DiseasesController {
   @ApiNotFoundResponse({ description: 'No existe una enfermedad con ese id' })
   findOne(@Param('id') id: string) {
     return this.diseasesService.findOne(parseId(id));
+  }
+
+  @Get(':id/details')
+  @ApiOperation({ summary: 'Ficha completa de una enfermedad: patógeno, tratamientos, plantas afectadas y brotes' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiOkResponse({ type: DiseaseDetailsOutDto })
+  @ApiBadRequestResponse({ description: 'El id no es un entero positivo' })
+  @ApiNotFoundResponse({ description: 'No existe una enfermedad con ese id' })
+  findDetails(@Param('id') id: string) {
+    return this.diseasesService.findDetails(parseId(id));
   }
 
   @Post()
