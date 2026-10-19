@@ -9,6 +9,9 @@ import { Pathogen } from '../pathogens/entities/pathogen.entity.js';
 import { StatisticsFilterInDto } from './dtos/statistics-filter-in-dto.js';
 import { OutbreakGroupOutDto } from './dtos/outbreak-group-out-dto.js';
 import { RegionOutbreakOutDto } from './dtos/region-outbreak-out-dto.js';
+import { MonthOutbreakOutDto } from './dtos/month-outbreak-out-dto.js';
+import { OutbreakSummaryOutDto } from './dtos/outbreak-summary-out-dto.js';
+import { isInRiskSeason } from './risk-season.js';
 
 interface GroupRow {
   id: number;
@@ -160,6 +163,64 @@ export class StatisticsService implements StatisticsServiceInterface {
         outbreaks: item.topOutbreaks,
       },
     }));
+  }
+
+  // Carga todos los brotes del período en memoria para poder cruzarlos con la enfermedad y
+  // determinar si cada brote cayó en la época de riesgo de su enfermedad.
+  async byMonth(filters: StatisticsFilterInDto): Promise<MonthOutbreakOutDto[]> {
+    const query = this.outbreakRepository
+      .createQueryBuilder('o')
+      .select('o.reportDate', 'reportDate')
+      .addSelect('o.diseaseId', 'diseaseId')
+      .addSelect('o.affectedHectares', 'affectedHectares');
+    this.applyDateFilters(query, filters);
+
+    const rows = await query.getRawMany<{ reportDate: string; diseaseId: string | number; affectedHectares: string }>();
+    if (rows.length === 0) return [];
+
+    const diseaseIds = [...new Set(rows.map((row) => Number(row.diseaseId)))];
+    const diseases = await this.diseaseRepository.findBy({ id: In(diseaseIds) });
+    const diseaseMap = new Map(diseases.map((disease) => [disease.id, disease]));
+
+    const monthMap = new Map<string, { outbreaks: number; hectares: number; outbreaksInRiskSeason: number }>();
+    for (const row of rows) {
+      const reportDate = row.reportDate;
+      const month = reportDate.slice(0, 7);
+      const monthNum = Number(reportDate.slice(5, 7));
+      const disease = diseaseMap.get(Number(row.diseaseId));
+      const inRisk = disease !== undefined && isInRiskSeason(monthNum, disease.riskSeason);
+
+      const current = monthMap.get(month) ?? { outbreaks: 0, hectares: 0, outbreaksInRiskSeason: 0 };
+      current.outbreaks += 1;
+      current.hectares += Number(row.affectedHectares);
+      if (inRisk) current.outbreaksInRiskSeason += 1;
+      monthMap.set(month, current);
+    }
+
+    const sorted = [...monthMap.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, data]) => ({
+        month,
+        outbreaks: data.outbreaks,
+        hectares: this.round(data.hectares),
+        outbreaksInRiskSeason: data.outbreaksInRiskSeason,
+      }));
+
+    return this.applyLimit(sorted, filters.limit);
+  }
+
+  async summary(filters: StatisticsFilterInDto): Promise<OutbreakSummaryOutDto> {
+    const query = this.outbreakRepository
+      .createQueryBuilder('o')
+      .select('COUNT(*)', 'totalOutbreaks')
+      .addSelect('SUM(o.affectedHectares)', 'totalHectares');
+    this.applyDateFilters(query, filters);
+
+    const result = await query.getRawOne<{ totalOutbreaks: string; totalHectares: string | null }>();
+    return {
+      totalOutbreaks: Number(result?.totalOutbreaks ?? 0),
+      totalHectares: this.round(Number(result?.totalHectares ?? 0)),
+    };
   }
 
   // Agrupa los brotes por una columna (una sola tabla, sin joins) y cuenta brotes y hectáreas.
