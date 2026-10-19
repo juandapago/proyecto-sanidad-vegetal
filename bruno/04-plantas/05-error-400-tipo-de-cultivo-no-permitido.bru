@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - tipo de cultivo no permitido
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Uchuva",
+    "scientificName": "Solanum prueba3",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "arbusto",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

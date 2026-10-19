@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear patógeno
+  type: http
+  seq: 23
+}
+
+post {
+  url: {{baseUrl}}/pathogens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Tizón tardío",
+    "scientificName": "Phoma andina",
+    "pathogenType": "oomiceto",
+    "transmissionMode": "viento y salpicaduras de lluvia",
+    "geneticSequence": "ACGTTGCAACGT"
+  }
+}
+
+vars:post-response {
+  pathogenId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

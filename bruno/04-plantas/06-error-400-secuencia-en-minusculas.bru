@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - secuencia en minúsculas
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Uchuva",
+    "scientificName": "Solanum prueba4",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "acgtacgt"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

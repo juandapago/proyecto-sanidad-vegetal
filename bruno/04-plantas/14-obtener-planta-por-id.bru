@@ -1,0 +1,15 @@
+meta {
+  name: Obtener planta por id
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

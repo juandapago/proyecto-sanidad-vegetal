@@ -1,0 +1,25 @@
+meta {
+  name: Error 409 - nombre científico repetido
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Uchuva dorada",
+    "scientificName": "Physalis peruviana",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+assert {
+  res.status: eq 409
+}
