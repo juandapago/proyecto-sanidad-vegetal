@@ -1,0 +1,15 @@
+meta {
+  name: Listar tratamientos
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/treatments
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Error 400 - descripción vacía
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/treatments
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Fungicida a base de cobre",
+    "applicationDescription": "",
+    "treatmentType": "quimico",
+    "diseaseId": {{diseaseId}}
+  }
+}
+
+assert {
+  res.status: eq 400
+}

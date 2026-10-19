@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - secuencia con letras no permitidas
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/pathogens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Antracnosis",
+    "scientificName": "Prueba letras",
+    "pathogenType": "hongo",
+    "transmissionMode": "agua de lluvia",
+    "geneticSequence": "ACGX"
+  }
+}
+
+assert {
+  res.status: eq 400
+}
