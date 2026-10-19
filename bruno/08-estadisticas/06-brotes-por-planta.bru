@@ -1,0 +1,15 @@
+meta {
+  name: Brotes por planta
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/by-plant
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

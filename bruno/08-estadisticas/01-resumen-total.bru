@@ -1,0 +1,17 @@
+meta {
+  name: Resumen total de brotes
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/summary
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalOutbreaks: isDefined
+  res.body.totalHectares: isDefined
+}
