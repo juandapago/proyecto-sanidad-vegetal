@@ -1,0 +1,15 @@
+meta {
+  name: Listar plantas
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/plants
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear otra planta
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Lulo",
+    "scientificName": "Solanum quitoense",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "ACGTACGTAAAA"
+  }
+}
+
+vars:post-response {
+  otherPlantId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

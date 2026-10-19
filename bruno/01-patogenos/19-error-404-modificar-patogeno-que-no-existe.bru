@@ -1,0 +1,21 @@
+meta {
+  name: Error 404 - modificar patógeno que no existe
+  type: http
+  seq: 19
+}
+
+patch {
+  url: {{baseUrl}}/pathogens/999999
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "x"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

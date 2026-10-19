@@ -1,0 +1,15 @@
+meta {
+  name: Limpiar - eliminar enfermedad
+  type: http
+  seq: 43
+}
+
+delete {
+  url: {{baseUrl}}/diseases/{{diseaseId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

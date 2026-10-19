@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear planta
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Quinua",
+    "scientificName": "Chenopodium quinoa",
+    "botanicalFamily": "Amaranthaceae",
+    "cropType": "cereal",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+vars:post-response {
+  plantId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Limpiar - eliminar brote
+  type: http
+  seq: 39
+}
+
+delete {
+  url: {{baseUrl}}/outbreaks/{{outbreakId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

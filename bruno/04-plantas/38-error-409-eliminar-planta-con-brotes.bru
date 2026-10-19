@@ -1,0 +1,15 @@
+meta {
+  name: Error 409 - eliminar planta con brotes
+  type: http
+  seq: 38
+}
+
+delete {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 409
+}

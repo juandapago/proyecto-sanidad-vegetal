@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - nombre común vacío
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "",
+    "scientificName": "Solanum prueba2",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

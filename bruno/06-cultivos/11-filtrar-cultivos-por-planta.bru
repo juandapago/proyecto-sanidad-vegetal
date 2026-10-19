@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar cultivos por planta
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/crops?plantId={{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

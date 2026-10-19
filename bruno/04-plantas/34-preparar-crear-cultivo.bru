@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear cultivo
+  type: http
+  seq: 34
+}
+
+post {
+  url: {{baseUrl}}/crops
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "lot": "Lote 3",
+    "region": "Caldas",
+    "sowingDate": "2026-03-15",
+    "seedGeneticCode": "ACGTACGTACGT"
+  }
+}
+
+vars:post-response {
+  cropId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

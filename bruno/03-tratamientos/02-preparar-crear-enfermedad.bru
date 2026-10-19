@@ -1,0 +1,28 @@
+meta {
+  name: Preparar - crear enfermedad
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/diseases
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Pudrición del cogollo de la palma",
+    "symptoms": "Las hojas nuevas se pudren y se desprenden con olor fuerte",
+    "riskSeason": "invierno",
+    "pathogenId": {{pathogenId}}
+  }
+}
+
+vars:post-response {
+  diseaseId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

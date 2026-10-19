@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - fecha de siembra en el futuro
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/crops
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "lot": "Lote 7",
+    "region": "Tolima",
+    "sowingDate": "2099-01-01",
+    "seedGeneticCode": "ACGAACGTACGA"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

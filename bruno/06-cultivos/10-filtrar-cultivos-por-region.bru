@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar cultivos por región
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/crops?region=Tolima
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

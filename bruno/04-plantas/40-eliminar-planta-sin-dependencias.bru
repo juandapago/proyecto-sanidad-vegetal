@@ -1,0 +1,15 @@
+meta {
+  name: Eliminar planta sin dependencias
+  type: http
+  seq: 40
+}
+
+delete {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

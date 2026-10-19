@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear brote
+  type: http
+  seq: 37
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": {{plantId}},
+    "diseaseId": {{diseaseId}},
+    "reportDate": "2026-09-15",
+    "region": "Caldas",
+    "affectedHectares": 3.5
+  }
+}
+
+vars:post-response {
+  outbreakId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
