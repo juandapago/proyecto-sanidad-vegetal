@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - filtro plantId inválido
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/outbreaks?plantId=abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,18 @@
+meta {
+  name: Compuesto - riesgo del cultivo con enfermedades
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{baseUrl}}/crops/1/risk
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body.crop: isDefined
+  res.body.plant: isDefined
+  res.body.riskDiseases: isDefined
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Brotes por mes
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/by-month
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

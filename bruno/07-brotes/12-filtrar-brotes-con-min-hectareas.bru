@@ -1,0 +1,15 @@
+meta {
+  name: Filtrar brotes con mínimo de hectáreas
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/outbreaks?minHectares=10
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

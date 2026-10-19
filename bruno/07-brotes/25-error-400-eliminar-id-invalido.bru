@@ -1,0 +1,15 @@
+meta {
+  name: Error 400 - eliminar con id inválido
+  type: http
+  seq: 25
+}
+
+delete {
+  url: {{baseUrl}}/outbreaks/abc
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+}

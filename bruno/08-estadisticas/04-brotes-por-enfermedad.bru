@@ -1,0 +1,15 @@
+meta {
+  name: Brotes por enfermedad
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/statistics/outbreaks/by-disease
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+}

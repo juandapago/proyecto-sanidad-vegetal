@@ -1,0 +1,25 @@
+meta {
+  name: Error 400 - fecha de reporte en el futuro
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/outbreaks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": 1,
+    "diseaseId": 1,
+    "reportDate": "2030-01-01",
+    "region": "Huila",
+    "affectedHectares": 5.5
+  }
+}
+
+assert {
+  res.status: eq 400
+}
