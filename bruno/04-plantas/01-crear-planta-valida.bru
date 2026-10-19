@@ -1,0 +1,29 @@
+meta {
+  name: Crear planta válida
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Uchuva",
+    "scientificName": "Physalis peruviana",
+    "botanicalFamily": "Solanaceae",
+    "cropType": "hortaliza",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+vars:post-response {
+  plantId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

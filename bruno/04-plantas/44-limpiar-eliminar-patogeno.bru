@@ -1,0 +1,15 @@
+meta {
+  name: Limpiar - eliminar patógeno
+  type: http
+  seq: 44
+}
+
+delete {
+  url: {{baseUrl}}/pathogens/{{pathogenId}}
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 204
+}

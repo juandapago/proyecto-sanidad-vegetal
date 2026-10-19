@@ -1,0 +1,23 @@
+meta {
+  name: Error 400 - plantId como texto
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/susceptibilities
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "plantId": "uno",
+    "diseaseId": {{diseaseId}},
+    "level": "alta"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

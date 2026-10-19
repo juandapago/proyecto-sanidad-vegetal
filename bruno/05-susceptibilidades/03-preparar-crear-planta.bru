@@ -1,0 +1,29 @@
+meta {
+  name: Preparar - crear planta
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/plants
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Cacao",
+    "scientificName": "Theobroma cacao",
+    "botanicalFamily": "Malvaceae",
+    "cropType": "frutal",
+    "geneticSequence": "ACGTACGTACGT"
+  }
+}
+
+vars:post-response {
+  plantId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

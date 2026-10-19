@@ -1,0 +1,21 @@
+meta {
+  name: Modificar región
+  type: http
+  seq: 14
+}
+
+patch {
+  url: {{baseUrl}}/crops/{{cropId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "region": "Huila"
+  }
+}
+
+assert {
+  res.status: eq 200
+}

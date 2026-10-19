@@ -1,0 +1,21 @@
+meta {
+  name: Error 409 - modificar con nombre científico de otra planta
+  type: http
+  seq: 21
+}
+
+patch {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "scientificName": "Solanum quitoense"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

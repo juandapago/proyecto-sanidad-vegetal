@@ -1,0 +1,21 @@
+meta {
+  name: Modificar nombre común
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/plants/{{plantId}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "commonName": "Uchuva dorada"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
